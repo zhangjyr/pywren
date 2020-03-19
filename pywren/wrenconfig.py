@@ -51,6 +51,10 @@ def load(config_filename):
     import yaml
     res = yaml.safe_load(open(config_filename, 'r'))
     # sanity check
+    # aws_account_id sometimes starts with 0 and can be regarded as octal number.
+    # Ensure length of aws_account_id is no less than 12 digits, and convert to octal expression if necessary.
+    if res['account']['aws_account_id'] < 100000000000:
+        res['account']['aws_account_id'] = oct(res['account']['aws_account_id'])
     if res['s3']['bucket'] == 'BUCKET_NAME':
         raise Exception(
             "{} has bucket name as {} -- make sure you change the default bucket".format(
